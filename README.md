@@ -27,19 +27,14 @@ To Implement ELGAMAL ALGORITHM
 ```
 #include <stdio.h>
 
-long long modExp(long long base, long long exp, long long mod)
+int power(int base, int exp, int mod)
 {
-    long long result = 1;
+    int result = 1;
 
     while(exp > 0)
     {
-        if(exp % 2 == 1)
-        {
-            result = (result * base) % mod;
-        }
-
-        base = (base * base) % mod;
-        exp = exp / 2;
+        result = (result * base) % mod;
+        exp--;
     }
 
     return result;
@@ -47,42 +42,42 @@ long long modExp(long long base, long long exp, long long mod)
 
 int main()
 {
-    long long p, g;
-    long long privateKeyVijey, publicKeyVijey;
-    long long k, message;
-    long long c1, c2;
-    long long decryptedMessage;
+    int p, g;
+    int x;
+    int y;
+    int m, k;
+    int c1, c2;
+    int decrypted;
 
     printf("Enter prime number (p): ");
-    scanf("%lld", &p);
+    scanf("%d", &p);
 
     printf("Enter generator (g): ");
-    scanf("%lld", &g);
+    scanf("%d", &g);
 
-    printf("Enter Vijey's private key: ");
-    scanf("%lld", &privateKeyVijey);
+    printf("Enter private key (x): ");
+    scanf("%d", &x);
 
-    publicKeyVijey = modExp(g, privateKeyVijey, p);
+    y = power(g, x, p);
 
-    printf("Vijey's Public Key = %lld\n", publicKeyVijey);
+    printf("Public Key = %d\n", y);
 
-    printf("Enter message to encrypt: ");
-    scanf("%lld", &message);
+    printf("Enter message: ");
+    scanf("%d", &m);
 
-    printf("Enter random value k: ");
-    scanf("%lld", &k);
+    printf("Enter random value (k): ");
+    scanf("%d", &k);
 
-    c1 = modExp(g, k, p);
-    c2 = (message * modExp(publicKeyVijey, k, p)) % p;
+    c1 = power(g, k, p);
+    c2 = (m * power(y, k, p)) % p;
 
     printf("\nEncrypted Cipher Text:\n");
-    printf("C1 = %lld\n", c1);
-    printf("C2 = %lld\n", c2);
+    printf("C1 = %d\n", c1);
+    printf("C2 = %d\n", c2);
 
-    decryptedMessage =
-        (c2 * modExp(c1, p - 1 - privateKeyVijey, p)) % p;
+    decrypted = (c2 * power(c1, p - 1 - x, p)) % p;
 
-    printf("\nDecrypted Message = %lld\n", decryptedMessage);
+    printf("\nDecrypted Message = %d\n", decrypted);
 
     return 0;
 }
